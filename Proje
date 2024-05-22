@@ -1,0 +1,27 @@
+import discord
+import requests 
+
+client = discord.Client()
+
+@client.event
+async def on_ready():
+ print('Bot is ready.')
+
+@client.event
+async def on_message(message):
+ if message.author == client.user:
+     return
+
+if message.content.startswith('!weather'): 
+ city = message.content.split(' ')[1] # type: ignore
+url = f'http://api.openweathermap.org/data/2.5/weather?q={city},tr&appid=YOUR_API_KEY&units=metric'
+response = requests.get(url)
+data = response.json()
+
+if data['cod'] == 200:
+  weather = data['weather'][0]['description']
+temperature = data['main']['temp']
+else message.channel.send('The weather in {city} is {weather} with a temperature of {temperature}°C.')   # type: ignore
+
+
+client.run('MTI0Mjg0MTIwMDU3MDkyOTM0NQ.GbNIIM.aZwD5whob0jm82oJfgOIycG3DTDgJEhs5sCEZw')
